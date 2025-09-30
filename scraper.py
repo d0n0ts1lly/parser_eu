@@ -499,7 +499,7 @@ for file_name in os.listdir(download_dir):
                 "engine": row[7],
                 "cylinders": row[8],
                 "vin": row[9],
-                "setka": row[10]
+                "setka": row[10],
                 "title": row[11],
                 "category": row[12]
                 "odometer": row[13],
