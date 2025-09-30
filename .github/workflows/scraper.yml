@@ -1,1 +1,45 @@
+name: Run Scraper
 
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # каждые 30 минут
+  workflow_dispatch:
+
+concurrency:
+  group: scraper
+  cancel-in-progress: true
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyvirtualdisplay  # ДОБАВЛЕНО
+
+      - name: Install Chromium & chromedriver
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser chromium-chromedriver xvfb  # ДОБАВЛЕНО xvfb
+
+      - name: Run scraper
+        run: |
+          export CHROME_BIN=/usr/bin/chromium-browser
+          export PATH=$PATH:/usr/lib/chromium-browser/
+          python -u scraper.py
+        env:
+          COPART_USER: ${{ secrets.COPART_USER }}
+          COPART_PASS: ${{ secrets.COPART_PASS }}
+          FLASK_CLEAR_URL: ${{ secrets.FLASK_CLEAR_URL }}
+          FLASK_UPLOAD_URL: ${{ secrets.FLASK_UPLOAD_URL }}
