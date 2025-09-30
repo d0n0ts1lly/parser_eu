@@ -501,7 +501,7 @@ for file_name in os.listdir(download_dir):
                 "vin": row[9],
                 "setka": row[10],
                 "title": row[11],
-                "category": row[12]
+                "category": row[12],
                 "odometer": row[13],
                 "odometer_desc": row[14],
                 "damage": row[15],
