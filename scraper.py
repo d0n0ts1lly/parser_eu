@@ -242,6 +242,16 @@ try:
     except:
         print("ℹ Cookie баннер не найден")
 
+    try:
+        # Ждем появление модального окна
+        modal_close = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "#UnAuthorizedAccessModal .close, [data-dismiss='modal']"))
+        )
+        modal_close.click()
+        print("✅ Модальное окно закрыто")
+        time.sleep(2)
+    except Exception as e:
+        print(f"ℹ Модальное окно не найдено или не требует закрытия: {e}")
     
     export_button = wait.until(
     EC.element_to_be_clickable((By.CSS_SELECTOR, "button.export-csv-button"))
@@ -293,6 +303,16 @@ try:
     except:
         print("ℹ Cookie баннер не найден")
 
+    try:
+        # Ждем появление модального окна
+        modal_close = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "#UnAuthorizedAccessModal .close, [data-dismiss='modal']"))
+        )
+        modal_close.click()
+        print("✅ Модальное окно закрыто")
+        time.sleep(2)
+    except Exception as e:
+        print(f"ℹ Модальное окно не найдено или не требует закрытия: {e}")
     
     export_button = wait.until(
     EC.element_to_be_clickable((By.CSS_SELECTOR, "button.export-csv-button"))
@@ -343,7 +363,17 @@ try:
     except:
         print("ℹ Cookie баннер не найден")
 
-    
+    try:
+        # Ждем появление модального окна
+        modal_close = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "#UnAuthorizedAccessModal .close, [data-dismiss='modal']"))
+        )
+        modal_close.click()
+        print("✅ Модальное окно закрыто")
+        time.sleep(2)
+    except Exception as e:
+        print(f"ℹ Модальное окно не найдено или не требует закрытия: {e}")
+        
     export_button = wait.until(
     EC.element_to_be_clickable((By.CSS_SELECTOR, "button.export-csv-button"))
     )
