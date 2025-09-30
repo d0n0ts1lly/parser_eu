@@ -1,7 +1,6 @@
 name: Run Scraper
 
 on:
-  schedule:
   workflow_dispatch:
 
 concurrency:
