@@ -12,7 +12,7 @@ import concurrent.futures
 import threading
 import glob
 import shutil
-"""
+'''
 # =======================
 # Настройка виртуального дисплея
 # =======================
@@ -421,7 +421,7 @@ finally:
         display.stop()
         print("🖥️ Виртуальный дисплей остановлен")
 print(f"⏱ CSV скачаны за {time.perf_counter() - start_time:.2f} секунд")
-"""
+'''
 
 
 download_dir = os.path.join(os.getcwd(), "downloads")
