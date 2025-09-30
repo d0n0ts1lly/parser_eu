@@ -203,13 +203,13 @@ def login_to_copart():
         
         email_input = wait.until(EC.presence_of_element_located((By.ID, "username")))
         email_input.clear()
-        email_input.send_keys(COPART_USER)  # БЕЗ КАВЫЧЕК - используем переменную
+        email_input.send_keys("")
         print("✅ Логин введен")
         time.sleep(2)
 
         password_input = wait.until(EC.presence_of_element_located((By.ID, "password")))
         password_input.clear()
-        password_input.send_keys(COPART_PASS)  # БЕЗ КАВЫЧЕК - используем переменную
+        password_input.send_keys(COPART_PASS)
         print("✅ Пароль введен")
         time.sleep(2)
 
@@ -228,7 +228,8 @@ def login_to_copart():
 # =======================
 start_time = time.perf_counter()
 try:
-    driver.get("https://www.copart.com/ru/lotSearchResults?free=false&searchCriteria=%7B%22query%22:%5B%22*%22%5D,%22filter%22:%7B%22MAKE%22:%5B%22lot_make_desc:%5C%22BMW%5C%22%22%5D,%22MISC%22:%5B%22%23VehicleTypeCode:VEHTYPE_V%22,%22%23EXUPLTS:auction_date_utc:*%22%5D,%22ODM%22:%5B%22odometer_reading_received:%5B0%20TO%209999999%5D%22%5D,%22YEAR%22:%5B%22lot_year:%5B2011%20TO%202026%5D%22%5D%7D,%22watchListOnly%22:false,%22searchName%22:%22%22,%22freeFormSearch%22:false%7D&displayStr=AUTOMOBILE,%5B0%20TO%209999999%5D,%5B2015%20TO%202026%5D,Audi&from=%2FvehicleFinder&fromSource=widget&qId=655dade8-be5d-47c3-9e34-130c4cb31ff7-1755087829153")
+#Germany
+    driver.get("https://www.copart.de/lotSearchResults?query=&searchCriteria=%7B%22query%22:%5B%22*%22%5D,%22filter%22:%7B%7D,%22searchName%22:%22%22,%22watchListOnly%22:false,%22freeFormSearch%22:false%7D")
     time.sleep(5)
 
     # Закрываем куки, если есть
@@ -255,6 +256,7 @@ try:
     else:
         print("❌ Не удалось войти в систему")
 
+    # УБИРАЕМ лишний клик - файл УЖЕ должен скачаться после логина
     down_but = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".cprt-btn-white.export-csv-button")))
     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", down_but)
     driver.execute_script("arguments[0].click();", down_but)
@@ -266,7 +268,7 @@ try:
         csv_files = glob.glob(os.path.join(download_dir, "*.csv"))
         if csv_files:
             original_filename = os.path.basename(csv_files[0])
-            new_filename = f"copart_0.csv"
+            new_filename = f"germany.csv"
             original_path = os.path.join(download_dir, original_filename)
             new_path = os.path.join(download_dir, new_filename)
             if os.path.exists(original_path):
@@ -276,13 +278,108 @@ try:
 
     time.sleep(5)
 
-    driver.get("https://www.copart.com/ru/lotSearchResults?free=false&searchCriteria=%7B%22query%22:%5B%22*%22%5D,%22filter%22:%7B%22MISC%22:%5B%22%23VehicleTypeCode:VEHTYPE_V%22,%22%23MakeCode:AUDI%20OR%20%23MakeDesc:Audi%22,%22%23EXUPLTS:auction_date_utc:*%22%5D,%22ODM%22:%5B%22odometer_reading_received:%5B0%20TO%209999999%5D%22%5D,%22YEAR%22:%5B%22lot_year:%5B2011%20TO%202026%5D%22%5D%7D,%22watchListOnly%22:false,%22searchName%22:%22%22,%22freeFormSearch%22:false%7D&displayStr=AUTOMOBILE,%5B0%20TO%209999999%5D,%5B2015%20TO%202026%5D,Audi&from=%2FvehicleFinder&fromSource=widget&qId=655dade8-be5d-47c3-9e34-130c4cb31ff7-1755087161008")
-    dwn(1)
 
-    driver.get("https://www.copart.com/ru/lotSearchResults?free=false&searchCriteria=%7B%22query%22:%5B%22*%22%5D,%22filter%22:%7B%22MAKE%22:%5B%22lot_make_desc:%5C%22CHEVROLET%5C%22%22%5D,%22MISC%22:%5B%22%23VehicleTypeCode:VEHTYPE_V%22,%22%23EXUPLTS:auction_date_utc:*%22%5D,%22ODM%22:%5B%22odometer_reading_received:%5B0%20TO%209999999%5D%22%5D,%22YEAR%22:%5B%22lot_year:%5B2011%20TO%202026%5D%22%5D%7D,%22watchListOnly%22:false,%22searchName%22:%22%22,%22freeFormSearch%22:false%7D&displayStr=AUTOMOBILE,%5B0%20TO%209999999%5D,%5B2015%20TO%202026%5D,Audi&from=%2FvehicleFinder&fromSource=widget&qId=655dade8-be5d-47c3-9e34-130c4cb31ff7-1755087856342")
-    dwn(2)
+#Spain
+    driver.get("https://www.copart.es/en/lotSearchResults?query=")
+    time.sleep(5)
 
-    print("Файлы в папке downloads:", os.listdir(download_dir))
+    # Закрываем куки, если есть
+    try:
+        cookie_accept = WebDriverWait(driver, 5).until(
+            EC.element_to_be_clickable((By.ID, "onetrust-accept-btn-handler"))
+        )
+        cookie_accept.click()
+        print("✅ Cookie баннер закрыт")
+    except:
+        print("ℹ Cookie баннер не найден")
+
+    
+    export_button = wait.until(
+    EC.element_to_be_clickable((By.CSS_SELECTOR, "button.export-csv-button"))
+    )
+    export_button.click()
+
+    time.sleep(5)
+
+    # ИСПРАВЛЕНО: используем функцию логина вместо прямого ввода
+    if login_to_copart():
+        print("✅ Успешный вход в систему")
+    else:
+        print("❌ Не удалось войти в систему")
+
+    # УБИРАЕМ лишний клик - файл УЖЕ должен скачаться после логина
+    down_but = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".cprt-btn-white.export-csv-button")))
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", down_but)
+    driver.execute_script("arguments[0].click();", down_but)
+    time.sleep(5)
+
+    # Ждем скачивания первого файла и переименовываем его
+    if wait_for_download_complete(timeout=45):
+        # Переименовываем первый файл
+        csv_files = glob.glob(os.path.join(download_dir, "*.csv"))
+        if csv_files:
+            original_filename = os.path.basename(csv_files[0])
+            new_filename = f"spain.csv"
+            original_path = os.path.join(download_dir, original_filename)
+            new_path = os.path.join(download_dir, new_filename)
+            if os.path.exists(original_path):
+                os.rename(original_path, new_path)
+                print(f"✅ Первый файл переименован в: {new_filename}")
+
+
+    time.sleep(5)
+
+#Finland
+    driver.get("https://www.copart.fi/lotSearchResults?query=")
+    time.sleep(5)
+
+    # Закрываем куки, если есть
+    try:
+        cookie_accept = WebDriverWait(driver, 5).until(
+            EC.element_to_be_clickable((By.ID, "onetrust-accept-btn-handler"))
+        )
+        cookie_accept.click()
+        print("✅ Cookie баннер закрыт")
+    except:
+        print("ℹ Cookie баннер не найден")
+
+    
+    export_button = wait.until(
+    EC.element_to_be_clickable((By.CSS_SELECTOR, "button.export-csv-button"))
+    )
+    export_button.click()
+
+    time.sleep(5)
+
+    # ИСПРАВЛЕНО: используем функцию логина вместо прямого ввода
+    if login_to_copart():
+        print("✅ Успешный вход в систему")
+    else:
+        print("❌ Не удалось войти в систему")
+
+    # УБИРАЕМ лишний клик - файл УЖЕ должен скачаться после логина
+    down_but = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".cprt-btn-white.export-csv-button")))
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", down_but)
+    driver.execute_script("arguments[0].click();", down_but)
+    time.sleep(5)
+
+    # Ждем скачивания первого файла и переименовываем его
+    if wait_for_download_complete(timeout=45):
+        # Переименовываем первый файл
+        csv_files = glob.glob(os.path.join(download_dir, "*.csv"))
+        if csv_files:
+            original_filename = os.path.basename(csv_files[0])
+            new_filename = f"finland.csv"
+            original_path = os.path.join(download_dir, original_filename)
+            new_path = os.path.join(download_dir, new_filename)
+            if os.path.exists(original_path):
+                os.rename(original_path, new_path)
+                print(f"✅ Первый файл переименован в: {new_filename}")
+
+
+    time.sleep(5)
+
+    
 
 except Exception as e:
     print(f"❌ Произошла ошибка: {e}")
@@ -351,8 +448,8 @@ def normalize_make(make):
 # =======================
 # Чистим таблицу через Flask API
 # =======================
-flask_clear_url = 'http://www.bwauto.com.ua/clear_table'
-flask_upload_url = 'http://www.bwauto.com.ua/upload_data'
+flask_clear_url = 'http://www.bwauto.com.ua/clear_table_eu'
+flask_upload_url = 'http://www.bwauto.com.ua/upload_data_eu'
 
 start_clear = time.perf_counter()
 response = requests.post(flask_clear_url)
@@ -374,6 +471,15 @@ for file_name in os.listdir(download_dir):
     file_path = os.path.join(download_dir, file_name)
     print(f"Обработка файла: {file_name}")
 
+    if "germany" in file_name.lower() in file_name.lower():
+        country = "Germany"
+    elif "spain" in file_name.lower() in file_name.lower():
+        country = "Spain"
+    elif "finland" in file_name.lower() in file_name.lower():
+        country = "Finland"
+    else:
+        country = "Unknown"  # или значение по умолчанию
+
     with open(file_path, mode='r', encoding='utf-8') as f:
         reader = csv.reader(f)
         headers = next(reader)
@@ -393,17 +499,18 @@ for file_name in os.listdir(download_dir):
                 "engine": row[7],
                 "cylinders": row[8],
                 "vin": row[9],
-                "title": row[10],
-                "odometer": row[11],
-                "odometer_desc": row[12],
-                "damage": row[13],
-                "current_bid": row[14],
-                "my_bid": row[15],
-                "item_number": row[16],
-                "sale_name": row[17],
-                "auto_grade": row[18],
-                "sale_light": row[19],
-                "announcements": row[20],
+                "setka": row[10]
+                "title": row[11],
+                "category": row[12]
+                "odometer": row[13],
+                "odometer_desc": row[14],
+                "damage": row[15],
+                "current_bid": row[16],
+                "my_bid": row[17],
+                "item_number": row[18],
+                "sale_name": row[19],
+                "remont": row[20],
+                "country": country,
                 "sort_order": sort_order_value
             })
     os.remove(file_path)
